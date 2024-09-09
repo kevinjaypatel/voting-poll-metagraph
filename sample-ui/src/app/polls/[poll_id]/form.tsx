@@ -14,6 +14,9 @@ import { Button, Card, Input } from '../../../components/index.ts';
 import { IPoll } from '../../../types/poll.ts';
 import { useToastAction } from '../../../utils/use_toast_action.ts';
 
+import React from 'react';
+import ReadOnlyTextBlock from '../../../components/ReadOnlyTextBlock';
+
 import styles from './page.module.scss';
 import { castVote } from './actions.ts';
 
@@ -44,7 +47,11 @@ export const CastVoteForm = ({ poll }: ICastVoteFormProps) => {
   } = useForm<IFormVoteSchema>({
     mode: 'onTouched',
     resolver: zodResolver(FormVoteSchema),
-    defaultValues: { pollId: poll.id }
+    defaultValues: {
+        pollId: poll.id,
+        pollContent: poll.content,
+        proposalType: poll.proposalType
+        }
   });
 
   const registerField = buildRegisterField(register, formState, control);
@@ -133,20 +140,27 @@ export const CastVoteForm = ({ poll }: ICastVoteFormProps) => {
   return (
     <form className={styles.content} onSubmit={onFormSubmit}>
       <div className={styles.cards}>
-        <Card variants={['full-width', 'padding-m']} header={'Cast vote'}>
+        <Card variants={['full-width', 'padding-m']} header={poll.name}>
+        <ReadOnlyTextBlock text={poll.content}/>
           <Input
-            label="Poll id"
-            description="Your poll id"
-            placeholder="Enter a poll id"
+            label="Proposal Type"
+            description="The proposal type"
             readOnly
-            {...registerField('pollId')}
+            {...registerField('proposalType')}
           />
-          <Input
+      {/*<Input
+                  label="Proposal Description"
+                  description="The proposal description"
+                  readOnly
+                  {...registerField('pollContent')}
+                />*/}
+
+          {/*<Input
             label="Address"
             description="Voter address"
             readOnly
             {...registerField('address')}
-          />
+          />*/}
           <Input
             type="select"
             label="Option"
