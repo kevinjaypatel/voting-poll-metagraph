@@ -11,7 +11,17 @@ object Combiners {
   def combineCreatePoll(createPoll: CreatePoll, state: DataState[VoteStateOnChain, VoteCalculatedState]): DataState[VoteStateOnChain, VoteCalculatedState] = {
     val pollId = Hash.fromBytes(Serializers.serializeUpdate(createPoll)).toString
     val pollOptions = createPoll.pollOptions.flatMap(option => Map(option -> 0L)).toMap
-    val newState = Poll(pollId, createPoll.name, createPoll.owner, pollOptions, Map.empty, createPoll.startSnapshotOrdinal, createPoll.endSnapshotOrdinal)
+    val newState = Poll(
+      pollId,
+      createPoll.name,
+      createPoll.content,
+      createPoll.owner,
+      createPoll.proposalType,
+      createPoll.pollType,
+      pollOptions,
+      Map.empty,
+      createPoll.startSnapshotOrdinal,
+      createPoll.endSnapshotOrdinal)
 
     val newOnChain = VoteStateOnChain(state.onChain.updates :+ createPoll)
     val newCalculatedState = state.calculated.focus(_.polls).modify(_.updated(pollId, newState))

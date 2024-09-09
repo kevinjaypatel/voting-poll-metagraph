@@ -22,15 +22,27 @@ case class CustomRoutes[F[_] : Async](calculatedStateService: CalculatedStateSer
   implicit val logger: SelfAwareStructuredLogger[F] = Slf4jLogger.getLogger[F]
 
   @derive(decoder, encoder)
-  case class PollResponse(id: String, name: String, owner: Address, result: Map[String, Long], startSnapshotOrdinal: Long, endSnapshotOrdinal: Long, status: String)
+  case class PollResponse(
+                           id: String,
+                           name: String,
+                           content: String,
+                           owner: Address,
+                           proposalType: String,
+                           pollType: String,
+                           result: Map[String, Long],
+                           startSnapshotOrdinal: Long,
+                           endSnapshotOrdinal: Long,
+                           status: String)
 
   private def formatPoll(poll: Poll, lastOrdinal: Long): PollResponse = {
     if (poll.endSnapshotOrdinal < lastOrdinal) {
-      PollResponse(poll.id, poll.name, poll.owner, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "Closed")
+      PollResponse(poll.id, poll.name, poll.content, poll.owner, poll.proposalType, poll.pollType, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "Closed")
     } else if (poll.startSnapshotOrdinal > lastOrdinal) {
-      PollResponse(poll.id, poll.name, poll.owner, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "Not Started")
+//      PollResponse(poll.id, poll.name, poll.content, poll.owner, poll.proposalType, poll.pollType, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "Not Started")
+      PollResponse(poll.id, poll.name, poll.content, poll.owner, poll.proposalType, poll.pollType, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "In Review")
     } else {
-      PollResponse(poll.id, poll.name, poll.owner, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "Open")
+//      PollResponse(poll.id, poll.name, poll.content, poll.owner, poll.proposalType, poll.pollType, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "Open")
+      PollResponse(poll.id, poll.name, poll.content, poll.owner, poll.proposalType, poll.pollType, poll.pollOptions, poll.startSnapshotOrdinal, poll.endSnapshotOrdinal, "Active")
     }
   }
 
