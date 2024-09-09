@@ -36,3 +36,4 @@ scripts/
 /logs/
 .envrc
 .direnv/
+modules/shared_data/src/main/resources/application.conf
