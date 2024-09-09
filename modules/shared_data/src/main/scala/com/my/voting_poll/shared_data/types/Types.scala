@@ -11,8 +11,11 @@ object Types {
 
   @derive(decoder, encoder)
   case class CreatePoll(
-    name: String,
+    name: String,       // Title
+    content: String,    // Desc
     owner: Address,
+    proposalType: String,
+    pollType: String,
     pollOptions: List[String],
     startSnapshotOrdinal: Long,
     endSnapshotOrdinal: Long
@@ -29,7 +32,10 @@ object Types {
   case class Poll(
     id: String,
     name: String,
+    content: String,
     owner: Address,
+    proposalType: String,
+    pollType: String,
     pollOptions: Map[String, Long],
     usersVotes: Map[Address, Map[String, Long]],
     startSnapshotOrdinal: Long,
